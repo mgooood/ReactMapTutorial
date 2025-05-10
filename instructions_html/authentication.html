@@ -192,12 +192,25 @@ export const useAuth = () => {
         </div>
         
         <div class="info-box">
-            <h4>Key Concepts in AuthContext.tsx</h4>
+            <h4>Understanding the Authentication Context</h4>
+            <p>The <code>AuthContext.tsx</code> file is the cornerstone of our authentication system. Let's break down its purpose and how it works:</p>
+            
+            <h5>Why we need an Authentication Context:</h5>
             <ul>
-                <li><strong>State Management</strong>: Using useState to track user, loading state, and errors</li>
-                <li><strong>Mock Authentication</strong>: Simple username/password checking for demo purposes</li>
-                <li><strong>Persistence</strong>: Using localStorage to persist the login across page refreshes</li>
-                <li><strong>Error Handling</strong>: Properly capturing and exposing authentication errors</li>
+                <li><strong>Global State</strong>: Authentication state needs to be accessible throughout the entire application</li>
+                <li><strong>Single Source of Truth</strong>: Centralizes all authentication logic in one place</li>
+                <li><strong>Code Organization</strong>: Separates authentication concerns from UI components</li>
+            </ul>
+            
+            <h5>Key Implementation Details:</h5>
+            <ul>
+                <li><strong>TypeScript Interfaces</strong>: Define exact shape of user data and context API</li>
+                <li><strong>React Context API</strong>: Creates a context that can be consumed by any component</li>
+                <li><strong>State Management</strong>: Uses <code>useState</code> to track user, loading state, and errors</li>
+                <li><strong>Side Effects</strong>: Uses <code>useEffect</code> to check for existing user on mount</li>
+                <li><strong>Persistence</strong>: Stores authentication data in <code>localStorage</code> to survive page refreshes</li>
+                <li><strong>Mock Authentication</strong>: Implements a simple credential check (can be replaced with real API calls)</li>
+                <li><strong>Custom Hook</strong>: The <code>useAuth</code> hook provides a clean way for components to access auth functionality</li>
             </ul>
         </div>
         
@@ -228,6 +241,36 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 };</code></pre>
                 </div>
             </div>
+
+        <div class="info-box">
+            <h4>Understanding Protected Routes</h4>
+            <p>The <code>ProtectedRoute</code> component is essential for controlling access to restricted parts of your application. Let's explore why we need it and how it works:</p>
+            
+            <h5>Why we need Protected Routes:</h5>
+            <ul>
+                <li><strong>Access Control</strong>: Prevents unauthorized users from accessing private pages or features</li>
+                <li><strong>Security Layer</strong>: Adds a client-side security check before rendering sensitive components</li>
+                <li><strong>User Experience</strong>: Automatically redirects unauthenticated users to the login page</li>
+                <li><strong>Reusability</strong>: Creates a reusable pattern for protecting any route in your application</li>
+            </ul>
+            
+            <h5>Key Implementation Details:</h5>
+            <ul>
+                <li><strong>Component Composition</strong>: Uses the children prop to wrap around protected content</li>
+                <li><strong>Authentication Check</strong>: Uses the <code>useAuth</code> hook to access the global authentication state</li>
+                <li><strong>Conditional Rendering</strong>: Renders either the protected content or a redirect based on auth state</li>
+                <li><strong>React Router Integration</strong>: Uses the <code>Navigate</code> component to handle redirects</li>
+                <li><strong>Replace Flag</strong>: The <code>replace</code> prop ensures the redirect doesn't add to the browser history stack</li>
+            </ul>
+
+            <h5>How to Use It:</h5>
+            <p>With this component in place, you can protect any route by wrapping it like this:</p>
+            <pre><code>&lt;Route path="/map" element={
+  &lt;ProtectedRoute&gt;
+    &lt;MapComponent /&gt;
+  &lt;/ProtectedRoute&gt;
+} /&gt;</code></pre>
+        </div>
         
         <h3>Step 3: Building the Authentication Form Component</h3>
         
@@ -337,6 +380,37 @@ export const LoginForm = () => {
 };</code></pre>
                 </div>
             </div>
+
+        <div class="info-box">
+            <h4>Understanding the Login Form Component</h4>
+            <p>The <code>LoginForm</code> component is the user-facing part of our authentication system. Let's explore why it's designed this way and the important concepts it demonstrates:</p>
+            
+            <h5>Why Create a Standalone Login Form Component:</h5>
+            <ul>
+                <li><strong>Separation of Concerns</strong>: Isolates user interface logic from authentication business logic</li>
+                <li><strong>Reusability</strong>: Can be placed anywhere in the application where login is needed</li>
+                <li><strong>Maintainability</strong>: Easier to update form validation and UI independently</li>
+                <li><strong>Testing</strong>: Simplifies unit testing of form behavior separate from auth logic</li>
+            </ul>
+            
+            <h5>Key Implementation Details:</h5>
+            <ul>
+                <li><strong>Form State Management</strong>: Uses <code>useState</code> to track username, password, and validation errors</li>
+                <li><strong>Input Validation</strong>: Implements client-side validation before submission</li>
+                <li><strong>Error Handling</strong>: Shows field-specific errors and form-level authentication errors</li>
+                <li><strong>Loading States</strong>: Disables inputs and shows loading indicator during authentication</li>
+                <li><strong>Integration with Auth Context</strong>: Uses <code>useAuth</code> hook to access login functionality</li>
+                <li><strong>Navigation</strong>: Uses React Router's <code>useNavigate</code> hook to redirect after successful login</li>
+            </ul>
+
+            <h5>Accessibility Features:</h5>
+            <ul>
+                <li><strong>ARIA Attributes</strong>: Uses <code>aria-invalid</code>, <code>aria-describedby</code>, and <code>aria-busy</code> for screen readers</li>
+                <li><strong>Form Labeling</strong>: Properly associates labels with form controls using <code>htmlFor</code></li>
+                <li><strong>Error Messaging</strong>: Error messages are semantically linked to their inputs</li>
+                <li><strong>Loading Indication</strong>: Button state clearly indicates when form is processing</li>
+            </ul>
+        </div>
         
         <h3>Step 4: Adding the CSS for the Login Form</h3>
         
@@ -445,6 +519,33 @@ export const LoginForm = () => {
 </code></pre>
                 </div>
             </div>
+
+        <div class="info-box">
+            <h4>Understanding the Login Form Styling</h4>
+            <p>The CSS for our login form follows a mobile-first approach with careful attention to usability and aesthetics. Let's examine the key styling decisions:</p>
+            
+            <h5>Why CSS Matters for Authentication Forms:</h5>
+            <ul>
+                <li><strong>User Trust</strong>: Professional styling creates confidence in your application's security</li>
+                <li><strong>Clarity</strong>: Clear visual hierarchy helps users understand what information is required</li>
+                <li><strong>Feedback</strong>: Visual cues for validation errors improve the user experience</li>
+                <li><strong>Accessibility</strong>: Proper styling enhances readability and usability for all users</li>
+            </ul>
+            
+            <h5>Key Design Decisions:</h5>
+            <ul>
+                <li><strong>Container Layout</strong>: Fixed width with centered positioning creates focus on the form</li>
+                <li><strong>Card-style Design</strong>: White background with subtle shadow creates a sense of elevation</li>
+                <li><strong>Vertical Layout</strong>: Stacked form elements for better mobile experience</li>
+                <li><strong>Visual Hierarchy</strong>: Different text weights and sizes guide users through the form</li>
+                <li><strong>Input Focus States</strong>: Custom focus styling draws attention to the active field</li>
+                <li><strong>Error Styling</strong>: Red color coding and distinctive positioning for error messages</li>
+                <li><strong>Button Design</strong>: Prominent styling for the primary action (login button)</li>
+            </ul>
+
+            <h5>Responsive Considerations:</h5>
+            <p>This CSS is built with a mobile-first approach, starting with styles that work well on small screens and then enhancing for larger displays. The fixed-width container with <code>margin: auto</code> ensures proper centering regardless of screen size.</p>
+        </div>
         
         <h3>Step 5: Setting Up the App Routes</h3>
         
@@ -453,7 +554,6 @@ export const LoginForm = () => {
         <div class="card">
             <div class="code-block">
                 <pre><code>// src/App.tsx
-            <pre><code>// src/App.tsx
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
@@ -491,13 +591,47 @@ function App() {
 }
 
 export default App;</code></pre>
+            </div>
+        </div>
+            
+        <div class="info-box">
+            <h4>Understanding the App Routes Integration</h4>
+            <p>The App component brings all our authentication elements together into a working system. Let's explore how it's structured and why each part matters:</p>
+            
+            <h5>Why This App Structure Matters:</h5>
+            <ul>
+                <li><strong>Authentication Flow</strong>: Creates a complete user journey from login to protected content</li>
+                <li><strong>Component Composition</strong>: Shows how different React pieces work together as a system</li>
+                <li><strong>Provider Pattern</strong>: Demonstrates best practices for context-based state management</li>
+                <li><strong>Route Protection</strong>: Implements a practical security pattern for React applications</li>
+            </ul>
+            
+            <h5>Key Implementation Details:</h5>
+            <ul>
+                <li><strong>Context Provider Wrapping</strong>: <code>AuthProvider</code> wraps the entire application to make auth state globally available</li>
+                <li><strong>Router Configuration</strong>: Sets up React Router to handle navigation between authenticated and public routes</li>
+                <li><strong>Public Routes</strong>: The login page is accessible without authentication</li>
+                <li><strong>Protected Routes</strong>: The map view is wrapped in the <code>ProtectedRoute</code> component</li>
+                <li><strong>Default Redirection</strong>: The root path redirects to the login page for a smooth user experience</li>
+                <li><strong>Component Hierarchy</strong>: Follows a logical nesting pattern for maintainability</li>
+            </ul>
+
+            <h5>Real-World Application:</h5>
+            <p>This pattern can be extended to handle more complex authentication scenarios:</p>
+            <ul>
+                <li>Adding role-based access control</li>
+                <li>Implementing multiple levels of access</li>
+                <li>Supporting social login providers</li>
+                <li>Handling session timeouts and token refresh</li>
+            </ul>
         </div>
         
         <h3>Step 6: Creating a Temporary MapView Component</h3>
         
         <p>Let's create a placeholder for our map component that we'll fully implement in the next tutorial:</p>
         
-        <div class="code-block">
+        <div class="card">
+            <div class="code-block">
             <pre><code>// src/components/MapView.tsx
 import { useAuth } from '../contexts/AuthContext';
 
@@ -518,6 +652,31 @@ export const MapView = () => {
     &lt;/div&gt;
   );
 };</code></pre>
+            </div>
+        </div>
+        
+        <div class="info-box">
+            <h4>Understanding the Temporary MapView Component</h4>
+            <p>The <code>MapView</code> component serves as a placeholder that completes our authentication flow. Let's explore why this approach makes sense:</p>
+            
+            <h5>Why Create a Temporary Component:</h5>
+            <ul>
+                <li><strong>Complete User Flow</strong>: Provides a destination after successful authentication</li>
+                <li><strong>Incremental Development</strong>: Allows us to test authentication before implementing map functionality</li>
+                <li><strong>Clear Separation</strong>: Keeps authentication logic separate from map implementation concerns</li>
+                <li><strong>Testability</strong>: Makes it easier to test each piece of functionality independently</li>
+            </ul>
+            
+            <h5>Key Implementation Details:</h5>
+            <ul>
+                <li><strong>Authentication Integration</strong>: Uses the <code>useAuth</code> hook to access user info and logout functionality</li>
+                <li><strong>User Feedback</strong>: Displays the logged-in username to confirm successful authentication</li>
+                <li><strong>Logout Functionality</strong>: Provides a way for users to end their session</li>
+                <li><strong>Placeholder Content</strong>: Clearly indicates where the map will appear in future tutorials</li>
+            </ul>
+
+            <h5>What Comes Next:</h5>
+            <p>In the next tutorial, we'll replace this placeholder with actual map functionality using the ArcGIS JavaScript API. The authentication system we've built will ensure that only authenticated users can access and interact with the map.</p>
         </div>
         
         <h3>Why This Approach Works for Beginners</h3>
