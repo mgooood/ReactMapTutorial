@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building a Modern React 19 Application with ArcGIS Maps</title>
+    <!-- CSS variables for theming and consistent styling -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="container">
+    <!-- Hero banner section with image -->
+    <div class="hero-banner">
+        <img src="images/hero-banner.jpg" alt="GIS Data Visualization Example" class="hero-image">
+        <div class="hero-overlay">
+            <h1>Building a Modern React 19 Application with ArcGIS Maps</h1>
+        </div>
+    </div>
+    
+    <h2>Introduction</h2>
+    
+    <p>Welcome to this comprehensive tutorial on building a modern web application using React 19 and ArcGIS maps! In this guide, we'll walk through the entire process of creating a web application that includes an interactive map component using Esri's ArcGIS JavaScript SDK and Calcite Design System.</p>
+    
+    <h3>What We'll Build</h3>
+    
+    <p>We'll create a simple web application with two main screens:</p>
+    <ol>
+        <li>A login screen (for demonstration purposes)</li>
+        <li>A map screen that displays an interactive ArcGIS map with basic functionality</li>
+    </ol>
+    
+    <h3>Who This Tutorial Is For</h3>
+    
+    <p>This tutorial is designed for beginner programmers who have:</p>
+    <ul>
+        <li>Basic understanding of HTML, CSS, and JavaScript</li>
+        <li>Little to no experience with React or mapping technologies</li>
+        <li>Interest in building interactive web applications with maps</li>
+    </ul>
+    
+    <h3>Technologies We'll Use</h3>
+    
+    <!-- Technology logos -->
+    <div class="tech-logos">
+        <img src="images/react-logo.svg" alt="React Logo" class="tech-logo">
+        <img src="images/vite-logo.svg" alt="Vite Logo" class="tech-logo">
+        <img src="images/typescript-logo.svg" alt="TypeScript Logo" class="tech-logo">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHcAAAArCAMAAAB1q+c0AAAAaVBMVEX///8AAADh4eGrq6v29vbHx8cYGBj5+fnAwMDq6uq6urqurq7k5OSnp6fn5+fPz8/W1taCgoKhoaGRkZF8fHxUVFTw8PCYmJgLCwu0tLRDQ0NtbW2JiYkdHR0wMDBfX184ODhLS0soKCjxLZzAAAAEoklEQVRYhb1Yia6jOgyNKZSlLAHCTtn+/yPHiRMg5d7XJ007R6oEDuR4jylj/w5xUyb+78sp5477BdoAEM/6pyU/GlqY8+LBv8ALCvN1IRXQ32o3DaKuC+IfFfsLZMTbXjydgwgZ62DuilIsAH0Zf4H3fhGLXvI4LXRKwMsNeu+DxMQrbGECDzarqNYL3LTQ66H6nM1c0i62m0vI0NEZ3cwQ0UUsc/DxMeK6GCNb0oA0tSmcZIYl9FoQgxibQKw+KpF/jPgVHngsriY4QYxieGIWiEx8jbiGgoU745C5zIFRhlwB2ZPv8M49842xI5XtDbinJY0AeE0u3lTLtFSFY6l/G5ZpWoaAbt0oQGBl1k0/LZjGsbzHAPMg8+WLWEFsII41NJus0+52Fr00meiIyLy/4Itd+FTZ46hrD02Q6I3/0JlNnpeSAl2r38j2Xcoj1DNqlR2sdXXOA7MS3q3s2HmzYm+PN83rBsHoyfV87UnPqtR7N+15F15DddBaSwjy9WILueFttGA4eDXG4aHXgmAhUWlvUjEBxp/+k0SJF4zk7o3ygcTDoNa93V6DK+/m5WYppO39/sWkmu8pTVEMzvolu7nK5+jYU3wRrUgSGVCbtzauwMgzbE51ssIrbsxklkkWDaXxk+neO5Kw69iZV5jOaPNyWGXo+0b5vMfEnruXYMHK5qd/mDvswfbVMte8dn/RvIfQ5u1AeoaasDdBW9Tm5DghGoHq+r67k9BrR9NjxZW3PQQ2b/PEMumV5T1MKnLOhRe1U5GnrpZEBkGl7Z/1g3PDXYu3/I233KTSPvNzaDtWyTi6F17Xg1Q55LKiyPZDXaEKTrzBr7x3NAYy3sLoS6/LOCaXjT2yN/qRd5VuOwuWlF1S8MILMi0n2DglCkXar2+nfcR/8y7KFVbxhW95G8wYnAQGne1zT7xZMO+bzDN7UF6Rn+822lUHtFnPrn/Dm4Aj6whL3aWdOePjZtnjrCxXNmGxq3v2K3izGYPf8GYQTFV47/NnO4kuZM8Kq3cZo5jmIYXJrXTNqtZYXujOID/xd7yhOjx2D/Wob6kN0keJk0GnZ0zdGY+vCf96xTXfG15srTixn92a2ztg9CpuHidHr4YkofJS25gz2vt/9qpR0rcONzNddEaNeVzN01QvmyrLrDq+d/CyV25K6ZSq3/KmMvmKM6/RnIYQDEN1P+ZPk+ZmHmlrTYtYRK6Xh7f5LLdHRZMjhUfz8Gp46YxlZ+kBeQoFLzKpzFveVDWcbn+Jrffdd4rXNVlFGC0KOgvshvJUHzzveDHCCWosaJLAKonxVwejnqNyv1yYhXjYGYSZQ9x8l22kyoU3eeXFquSPztSrJ5OnkmOCOmxzHGcujcL1GjEMTXD+VnWDchiGMtk/nUOJ0+eQqwTnbVLVUHWUUuZh50ikAOSoEdvH6keRUfNT/kMvzhFxNVhE2euX40eBxd5RybfQZjJ3lG/zMvnpj4EPIt6gSlnRm+lpusvIjK9D0+eB8wZmpwfTokKf4tQs+1H37r2/hyPDu/EBOrdOHZXM4zf+T7qiLtZTo15v/4ZVwY29oinL5sE//T+SjT92FD9F9tJEzwAAAABJRU5ErkJggg==" alt="Esri Logo - ArcGIS JavaScript SDK" class="tech-logo" style="background-color: white; padding: 5px; border-radius: 5px;">
+    </div>
+    
+    <ul>
+        <li><strong>React 19</strong>: The latest version of the popular JavaScript library for building user interfaces</li>
+        <li><strong>Vite</strong>: A modern, fast build tool that significantly improves the development experience</li>
+        <li><strong>TypeScript</strong>: A superset of JavaScript that adds static typing</li>
+        <li><strong>ArcGIS JavaScript SDK</strong>: Esri's powerful mapping platform</li>
+        <li><strong>Calcite Design System</strong>: Esri's design system that provides consistent, accessible UI components</li>
+    </ul>
+    
+    <h3>What You'll Learn</h3>
+    
+    <p>By the end of this tutorial, you'll understand:</p>
+    <ul>
+        <li>How to set up a modern React application using Vite</li>
+        <li>How to integrate ArcGIS maps into a React application</li>
+        <li>How to implement basic user authentication</li>
+        <li>How to structure a React application following best practices</li>
+        <li>How to use Esri's Calcite components for a cohesive user interface</li>
+        <li>How to implement responsive design with a mobile-first approach</li>
+        <li>How to apply web accessibility best practices</li>
+    </ul>
+    
+    <h3>Prerequisites</h3>
+    
+    <p>Before we begin, you'll need to have the following installed on your computer:</p>
+    <ul>
+        <li><strong>Node.js</strong> (version 18 or higher)</li>
+        <li><strong>npm</strong> (usually comes with Node.js)</li>
+        <li>A code editor (we recommend Visual Studio Code)</li>
+        <li>A modern web browser (Chrome, Firefox, Edge, or Safari)</li>
+    </ul>
+    
+    <h3>How This Tutorial Is Structured</h3>
+    
+    <p>We'll break down this project into manageable sections:</p>
+    
+    <ol>
+        <li><strong>Setting Up the Development Environment</strong>: Installing necessary tools and creating the initial project</li>
+        <li><strong>Understanding the Project Structure</strong>: Exploring the files and folders in our project</li>
+        <li><strong>Building the Login Page</strong>: Creating a simple authentication screen</li>
+        <li><strong>Integrating ArcGIS Maps</strong>: Adding and configuring the map component</li>
+        <li><strong>Styling with Calcite</strong>: Using Esri's design system for a professional look</li>
+        <li><strong>Making It Responsive</strong>: Ensuring our app works great on all devices</li>
+        <li><strong>Testing and Deploying</strong>: Preparing our application for production</li>
+    </ol>
+    
+    <h3>A Note on Learning</h3>
+    
+    <p>Don't worry if some concepts seem challenging at first. We'll explain everything step by step, and by building this application, you'll gain practical experience with these technologies. Feel free to revisit sections as needed, and remember that learning to code is a journey!</p>
+    
+    <p>Let's begin by setting up our development environment in the next section.</p>
+    
+    <!-- App preview image -->
+    <h3>Preview of What We'll Build</h3>
+    <img src="images/map-example.jpg" alt="Preview of Final Application" class="preview-image">
+    <p>By the end of this tutorial, you'll have built an interactive mapping application that looks similar to this!</p>
+    
+    <div class="mt-3 mb-3">
+        <a href="setup.html" class="button">Next: Setting Up Your Environment →</a>
+    </div>
+    
+    <footer class="mt-3 text-center">
+        <p>&copy; 2025 React Map Tutorials</p>
+    </footer>
+</body>
+</html>

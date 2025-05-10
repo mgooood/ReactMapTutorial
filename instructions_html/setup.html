@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setting Up the Development Environment | React ArcGIS Map Tutorial</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/clipboard.js"></script>
+</head>
+<body class="container">
+    <!-- Hero banner section with image -->
+    <div class="hero-banner">
+        <img src="images/hero-banner.jpg" alt="GIS Data Visualization Example" class="hero-image">
+        <div class="hero-overlay">
+            <h1>Setting Up Your Development Environment</h1>
+        </div>
+    </div>
+    
+    <h2>Prerequisites</h2>
+    
+    <p>Before we begin building our React application with ArcGIS maps, we need to make sure we have the right tools installed. This section will guide you through setting up your development environment.</p>
+    
+    <div class="card">
+        <h3>Required Tools</h3>
+        <ul>
+            <li><strong>Node.js (v18.0.0 or later)</strong> - JavaScript runtime environment</li>
+            <li><strong>npm (comes with Node.js)</strong> - Package manager for JavaScript</li>
+            <li><strong>Code Editor</strong> - We recommend Visual Studio Code</li>
+            <li><strong>Modern Web Browser</strong> - Chrome, Firefox, Edge, or Safari</li>
+        </ul>
+    </div>
+    
+    <h2>Installing Node.js and npm</h2>
+    
+    <p>Node.js is a JavaScript runtime that allows us to run JavaScript on the server. npm (Node Package Manager) comes bundled with Node.js and helps us manage our project dependencies.</p>
+    
+    <h3>Installation Steps:</h3>
+    
+    <ol>
+        <li>
+            <p>Visit the <a href="https://nodejs.org/" target="_blank">official Node.js website</a></p>
+        </li>
+        <li>
+            <p>Download the LTS (Long Term Support) version, which is recommended for most users</p>
+        </li>
+        <li>
+            <p>Follow the installation instructions for your operating system</p>
+        </li>
+        <li>
+            <p>Verify the installation by opening your terminal or command prompt and running:</p>
+            <div class="card">
+                <div class="code-block command">
+                    <code>node --version</code>
+                </div>
+            </div>
+            <p>and</p>
+            <div class="card">
+                <div class="code-block command">
+                    <code>npm --version</code>
+                </div>
+            </div>
+        </li>
+    </ol>
+    
+    <p>If both commands display version numbers, you've successfully installed Node.js and npm!</p>
+    
+    <h2>Creating a New React Project with Vite</h2>
+    
+    <p>Vite is a modern build tool that provides an extremely fast development experience. We'll use it to create our React 19 application.</p>
+    
+    <h3>Step 1: Create a New Project</h3>
+    
+    <p>Open your terminal or command prompt and run the following command:</p>
+    
+    <div class="card">
+        <div class="code-block command">
+            <code>npm create vite@latest react-arcgis-map -- --template react-ts</code>
+        </div>
+    </div>
+    
+    <p>Let's break down this command in detail so you understand exactly what's happening:</p>
+    
+    <div class="card">
+        <h4>Command Breakdown:</h4>
+        <ul>
+            <li>
+                <strong>npm create</strong> - This is npm's command for creating a new project using a template. It's a shorthand for <code>npm init</code> that's specifically designed to work with project scaffolding tools.
+            </li>
+            <li>
+                <strong>vite@latest</strong> - This specifies that we want to use Vite as our project scaffolding tool, and specifically the latest version. Vite is a modern build tool that provides faster development experience than older tools like Create React App.
+            </li>
+            <li>
+                <strong>react-arcgis-map</strong> - This is the name we're giving to our project. It will also be the name of the directory that gets created.
+            </li>
+            <li>
+                <strong>--</strong> - This double dash is a common convention in command-line tools that signifies "what comes after this are arguments to pass to the script being executed, not to npm itself." In this case, it means the following arguments will be passed to the Vite project creation tool.
+            </li>
+            <li>
+                <strong>--template react-ts</strong> - This tells Vite which template to use for our project:
+                <ul>
+                    <li><strong>react</strong> - Means we want a React project (as opposed to Vue, Svelte, etc.)</li>
+                    <li><strong>-ts</strong> - This suffix indicates we want TypeScript support integrated into our React project</li>
+                </ul>
+                TypeScript is a superset of JavaScript that adds static type definitions, helping catch errors early during development.
+            </li>
+        </ul>
+    </div>
+    
+    <p>After running this command, you'll see prompts in your terminal guiding you through the rest of the setup process. Vite will:</p>
+    <ul>
+        <li>Create a new directory called <code>react-arcgis-map</code></li>
+        <li>Generate all the necessary files for a React + TypeScript project</li>
+        <li>Set up the project structure with modern best practices</li>
+        <li>Create a basic React application that's ready to run</li>
+    </ul>
+    
+    <h3>Step 2: Navigate to the Project Directory</h3>
+    
+    <div class="card">
+        <div class="code-block command">
+            <code>cd react-arcgis-map</code>
+        </div>
+    </div>
+    
+    <h3>Step 3: Install Dependencies</h3>
+    
+    <div class="card">
+        <div class="code-block command">
+            <code>npm install</code>
+        </div>
+    </div>
+    
+    <p>This command installs all the necessary dependencies for a React project as specified in the <code>package.json</code> file.</p>
+    
+    <h3>Step 4: Start the Development Server</h3>
+    
+    <div class="card">
+        <div class="code-block command">
+            <code>npm run dev</code>
+        </div>
+    </div>
+    
+    <p>This command starts the development server. You should see output indicating that the server is running, including a local URL (typically <code>http://localhost:5173/</code>) where you can view your application.</p>
+    
+    <p>Open your browser and navigate to the provided URL. You should see a welcome page for your new React application!</p>
+    
+    <div class="card">
+        <h3>What Just Happened?</h3>
+        <p>You've created a new React 19 application using Vite with TypeScript support. Vite provides a fast development environment with features like:</p>
+        <ul>
+            <li>Instant server start</li>
+            <li>Lightning-fast hot module replacement (HMR)</li>
+            <li>True on-demand compilation</li>
+            <li>TypeScript support out of the box</li>
+        </ul>
+    </div>
+    
+    <h2>Installing ArcGIS API for JavaScript</h2>
+    
+    <p>Next, we need to install the ArcGIS API for JavaScript to integrate mapping capabilities into our React application.</p>
+    
+    <h3>Understanding the ArcGIS JavaScript SDK</h3>
+    
+    <p>Before we install, let's understand what we're adding to our project:</p>
+    
+    <div class="card">
+        <h4>What is the ArcGIS JavaScript SDK?</h4>
+        <p>The ArcGIS API for JavaScript is Esri's library for building web mapping applications. It provides:</p>
+        <ul>
+            <li>Interactive map components</li>
+            <li>Geospatial data visualization tools</li>
+            <li>Geocoding and routing services</li>
+            <li>Spatial analysis capabilities</li>
+            <li>Access to Esri's basemaps and services</li>
+        </ul>
+        <p>The <code>@arcgis/core</code> package is the ES modules version of this API, which works well with modern JavaScript frameworks like React.</p>
+    </div>
+    
+    <h3>Installing the Package</h3>
+    
+    <p>In your terminal, with your project directory as the current directory, run:</p>
+    
+    <div class="card">
+        <div class="code-block command">
+            <code>npm install @arcgis/core</code>
+        </div>
+    </div>
+    
+    <p>Let's break down what this command does:</p>
+    
+    <ul>
+        <li><strong>npm install</strong> - This tells npm to download and install a package from the npm registry</li>
+        <li><strong>@arcgis/core</strong> - This is the package name. The <code>@arcgis/</code> part is called a "scope" and indicates that this package is published by the Esri/ArcGIS organization. The <code>core</code> part indicates that this is the core library of the ArcGIS JavaScript API.</li>
+    </ul>
+    
+    <p>When you run this command, npm will:</p>
+    <ul>
+        <li>Download the latest version of the @arcgis/core package</li>
+        <li>Install it in the <code>node_modules/@arcgis/core/</code> directory of your project</li>
+        <li>Add it to your project's dependencies in package.json</li>
+        <li>Download and install any other packages that @arcgis/core depends on</li>
+    </ul>
+    
+    <div class="card">
+        <h4>Important Note on Size</h4>
+        <p>The ArcGIS API is quite large (over 10MB) because it includes many specialized mapping and analysis capabilities. When we build our application, we'll use techniques to ensure we only include the parts we actually need.</p>
+    </div>
+    
+    <h2>Installing Calcite Components (Optional)</h2>
+    
+    <h3>Understanding Calcite Design System</h3>
+    
+    <p>Before installing, let's understand what Calcite is and why it's useful for our project:</p>
+    
+    <div class="card">
+        <h4>What is the Calcite Design System?</h4>
+        <p>Calcite is Esri's design system - a collection of UI components, design guidelines, and patterns that:</p>
+        <ul>
+            <li>Provides a consistent visual style matching other Esri applications</li>
+            <li>Offers pre-built accessible components that follow web standards</li>
+            <li>Includes specialized components for mapping applications</li>
+            <li>Saves development time by providing ready-to-use UI elements</li>
+            <li>Ensures your application follows modern accessibility guidelines</li>
+        </ul>
+    </div>
+    
+    <p>While using Calcite is optional (you could use any UI framework like Material UI, Tailwind, Bootstrap, etc.), it's beneficial when building ArcGIS applications because:</p>
+    <ul>
+        <li>It's designed specifically with mapping applications in mind</li>
+        <li>It integrates seamlessly with the ArcGIS JavaScript API</li>
+        <li>Users familiar with other Esri products will find your interface intuitive</li>
+    </ul>
+    
+    <h3>Installing the Package</h3>
+    
+    <p>In your terminal, with your project directory as the current directory, run:</p>
+    
+    <div class="card">
+        <div class="code-block command">
+            <code>npm install @esri/calcite-components</code>
+        </div>
+    </div>
+    
+    <p>Let's break down this command:</p>
+    <ul>
+        <li><strong>npm install</strong> - Tells npm to download and add a package to our project</li>
+        <li><strong>@esri/calcite-components</strong> - The package name, where:
+            <ul>
+                <li><strong>@esri/</strong> - The scope, indicating this package is published by Esri</li>
+                <li><strong>calcite-components</strong> - The actual package name for the UI component library</li>
+            </ul>
+        </li>
+    </ul>
+    
+    <div class="card">
+        <h4>Web Components Under the Hood</h4>
+        <p>Unlike React-specific libraries, Calcite is built using Web Components - a set of standardized web platform APIs that allow you to create custom, reusable HTML elements. This means:</p>
+        <ul>
+            <li>They work across different frameworks (not just React)</li>
+            <li>They're more future-proof as they use web standards</li>
+            <li>They require a slightly different integration approach than typical React components</li>
+        </ul>
+        <p>In a later section, we'll cover exactly how to properly integrate these components with React.</p>
+    </div>
+    
+    <h2>Basic Project Structure</h2>
+    
+    <p>Now that we have our project set up, let's understand the basic structure that Vite has created for us:</p>
+    
+    <div class="card">
+        <div class="code-block">
+            <code>react-arcgis-map/
+├── node_modules/       # Project dependencies
+├── public/             # Static assets served as-is
+├── src/                # Source code
+│   ├── assets/         # Images, fonts, etc.
+│   ├── App.css         # Styles for App component
+│   ├── App.tsx         # Main App component
+│   ├── index.css       # Global styles
+│   ├── main.tsx        # Entry point
+│   └── vite-env.d.ts   # TypeScript declarations for Vite
+├── .gitignore          # Git ignore file
+├── index.html          # HTML template
+├── package.json        # Project metadata and dependencies
+├── tsconfig.json       # TypeScript configuration
+└── vite.config.ts      # Vite configuration</code>
+        </div>
+    </div>
+    
+    <p>We'll primarily be working in the <code>src</code> directory, where we'll add our components, styles, and map integration code.</p>
+    
+    <h2>Next Steps</h2>
+    
+    <p>You've successfully set up your development environment for creating a React 19 application with ArcGIS maps! In the next section, we'll expand on this structure to support our specific requirements for a map application with authentication.</p>
+    
+    <div class="mt-3 mb-3">
+        <a href="intro.html" class="button">← Back to Introduction</a>
+        <a href="project-structure.html" class="button" style="float: right;">Next: Project Structure →</a>
+    </div>
+    
+    <footer class="mt-3 text-center">
+        <p>&copy; 2025 React Map Tutorials</p>
+    </footer>
+</body>
+</html>
