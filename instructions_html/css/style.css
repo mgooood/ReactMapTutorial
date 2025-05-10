@@ -326,6 +326,92 @@ code {
     width: 1px;
 }
 
+.visually-hidden:focus {
+    clip: auto !important;
+    height: auto !important;
+    width: auto !important;
+    display: block;
+    padding: 1rem;
+    background-color: white;
+    text-align: center;
+    z-index: 100;
+}
+
+/* Compact inline breadcrumbs - mobile first approach */
+.breadcrumb {
+    padding: 0.25rem 0;
+    background-color: var(--light-bg, #f8f9fa);
+    border-bottom: 1px solid var(--border-color, #e9ecef);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 1rem 0;
+    font-size: 0.65rem;
+}
+
+.breadcrumb ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.breadcrumb-content {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* Convert existing body.container to page-container */
+.page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.breadcrumb li {
+    display: inline-flex;
+    align-items: center;
+}
+
+.breadcrumb li:not(:last-child)::after {
+    content: "›";
+    margin-left: 0.5rem;
+    color: var(--text-muted, #6c757d);
+    font-weight: bold;
+}
+
+.breadcrumb a {
+    color: var(--primary-color, #0d6efd);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.breadcrumb a:hover {
+    text-decoration: underline;
+    opacity: 0.8;
+}
+
+.breadcrumb [aria-current="page"] {
+    color: var(--text-muted, #6c757d);
+    font-weight: 500;
+}
+
+/* Responsive adjustments for larger screens */
+@media (min-width: 576px) {
+    .breadcrumb ol {
+        gap: 0.75rem;
+    }
+    
+    .breadcrumb li:not(:last-child)::after {
+        margin-left: 0.75rem;
+    }
+}
+
 .skip-link {
     background: var(--primary-color);
     color: white;

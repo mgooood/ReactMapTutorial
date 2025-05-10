@@ -49,6 +49,26 @@ npm run dev
 ## Target Audience
 
 This tutorial is designed for:
+
 - Beginning web developers new to React
+- Web developers familiar with JavaScript/TypeScript who want to learn ArcGIS integration
+- React developers looking to add mapping capabilities to their applications
+- GIS professionals transitioning to modern web development
 - Developers interested in adding map functionality to web applications
 - Anyone wanting to learn modern frontend development practices
+
+## Roadmap
+
+Future improvements planned for this tutorial:
+
+1. **Templating System**: Implement a static site generator (like 11ty/Eleventy) to avoid HTML duplication and maintain consistency across tutorial pages
+
+2. **Breadcrumb Navigation**: Add compact breadcrumb navigation to improve user experience and tutorial flow
+
+3. **Interactive Examples**: Add more interactive code examples with live previews
+
+4. **Advanced Map Features**: Expand tutorial to cover more advanced ArcGIS features like custom layers, geocoding, and spatial analysis
+
+5. **Authentication Options**: Add sections on integrating with real authentication services like OAuth and ArcGIS Identity
+
+6. **Progressive Web App**: Add instructions for converting the application to a PWA for offline capability

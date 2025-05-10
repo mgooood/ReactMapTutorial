@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn how to create a simple authentication system for your React ArcGIS mapping application as part of our step-by-step tutorial series.">
+    <meta name="keywords" content="React, ArcGIS, mapping, authentication, React 19, tutorial">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Building the Authentication System | React ArcGIS Map Tutorial">
+    <meta property="og:description" content="Create a simple authentication system for your React mapping application with this beginner-friendly guide.">
+    <meta property="og:image" content="images/hero-banner.png">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Building the Authentication System | React ArcGIS Map Tutorial">
+    <meta name="twitter:description" content="Create a simple authentication system for your React mapping application with this beginner-friendly guide.">
+    
+    <title>Setting Up Your Authentication System | React ArcGIS Map Tutorial</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/collapsible.js" defer></script>
+</head>
+<body class="page-container">
+    <a href="#main-content" class="skip-link visually-hidden">Skip to main content</a>
+    
+    <!-- Compact breadcrumb navigation -->
+    <nav aria-label="Breadcrumb" class="breadcrumb">
+      <div class="breadcrumb-content">
+        <ol>
+          <li><a href="intro.html" title="Introduction to React ArcGIS Map Tutorial">Intro</a></li>
+          <li><a href="setup.html" title="Setting Up Your Development Environment">Setup</a></li>
+          <li aria-current="page" title="Setting Up Your Authentication System">Auth</li>
+        </ol>
+      </div>
+    </nav>
+    
+    <!-- Hero banner section with image -->
+    <div class="hero-banner" role="banner">
+        <img src="images/hero-banner.png" alt="GIS Data Visualization Example" class="hero-image" width="1200" height="300">
+        <div class="hero-overlay">
+            <h1>Setting Up Your Authentication System</h1>
+        </div>
+    </div>
+    
+    <main id="main-content">
+        
+        <p>In this section, we'll create a simple authentication system for our mapping application. While our implementation will use mock authentication for simplicity, we'll structure it in a way that makes future integration with real authentication services straightforward.</p>
+        
+        <div class="info-box">
+            <p><strong>Note:</strong> For a tutorial application, we'll use a simple mock authentication system. In a production environment, you would integrate with secure authentication services like OAuth, JWT-based systems, or ArcGIS Identity.</p>
+        </div>
+        
+        <h3>What We'll Build</h3>
+        
+        <p>We'll create the following components for our authentication system:</p>
+        
+        <ol>
+            <li>An <strong>Authentication Context</strong> to manage user state throughout the app</li>
+            <li>A <strong>Login Form</strong> with validation and error handling</li>
+            <li>A <strong>Protected Route</strong> component to restrict access to authenticated users</li>
+        </ol>
+        
+        <div class="centered">
+            <img src="images/login-page-preview.png" alt="Preview of the login form we'll build" width="600" height="400">
+        </div>
+        
+        <h3>Step 1: Creating the Authentication Context</h3>
+        
+        <p>First, let's create a context to manage authentication state across our application. This follows the React pattern of using Context for global state management.</p>
+        
+        <div class="collapsible">
+            <button type="button" class="collapsible-header" aria-expanded="false">
+                <h4>What is React Context? <span class="icon">+</span></h4>
+            </button>
+            <div class="collapsible-content" aria-hidden="true">
+                <p>React Context provides a way to share values like themes, user authentication, or preferences between components without having to explicitly pass props through every level of the component tree.</p>
+                <p>It's especially useful for data that can be considered "global" for a tree of React components, such as the current authenticated user or theme preferences.</p>
+            </div>
+        </div>
+        
+        <p>Create a new file in your project:</p>
+        
+        <div class="code-block">
+            <pre><code>mkdir -p src/contexts
+touch src/contexts/AuthContext.tsx</code></pre>
+        </div>
+        
+        <p>Now, let's implement our authentication context:</p>
+        
+        <div class="code-block">
+            <pre><code>// src/contexts/AuthContext.tsx
+import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+
+// Define types for our authentication
+interface User {
+  username: string;
+}
+
+interface AuthContextType {
+  user: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  error: string | null;
+  login: (username: string, password: string) => Promise&lt;void&gt;;
+  logout: () => void;
+}
+
+// Create the context with a default value
+const AuthContext = createContext&lt;AuthContextType | null&gt;(null);
+
+// Provider component that wraps our app and makes auth available
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [user, setUser] = useState&lt;User | null&gt;(null);
+  const [isLoading, setIsLoading] = useState&lt;boolean&gt;(false);
+  const [error, setError] = useState&lt;string | null&gt;(null);
+
+  // Check if user is already logged in (from localStorage)
+  useEffect(() => {
+    const storedUser = localStorage.getItem('auth_user');
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (e) {
+        localStorage.removeItem('auth_user');
+      }
+    }
+  }, []);
+
+  // Mock login function
+  const login = async (username: string, password: string) => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Simple validation for demo purposes
+      if (username === 'demo' && password === 'password') {
+        const user = { username };
+        setUser(user);
+        localStorage.setItem('auth_user', JSON.stringify(user));
+      } else {
+        throw new Error('Invalid credentials');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Logout function
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem('auth_user');
+  };
+
+  // Value that will be provided to consumers of this context
+  const value = {
+    user,
+    isAuthenticated: !!user,
+    isLoading,
+    error,
+    login,
+    logout
+  };
+
+  return (
+    &lt;AuthContext.Provider value={value}&gt;
+      {children}
+    &lt;/AuthContext.Provider&gt;
+  );
+};
+
+// Custom hook to use the auth context
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};</code></pre>
+        </div>
+        
+        <div class="info-box">
+            <h4>Key Concepts in AuthContext.tsx</h4>
+            <ul>
+                <li><strong>State Management</strong>: Using useState to track user, loading state, and errors</li>
+                <li><strong>Mock Authentication</strong>: Simple username/password checking for demo purposes</li>
+                <li><strong>Persistence</strong>: Using localStorage to persist the login across page refreshes</li>
+                <li><strong>Error Handling</strong>: Properly capturing and exposing authentication errors</li>
+            </ul>
+        </div>
+        
+        <h3>Step 2: Creating the Protected Route Component</h3>
+        
+        <p>Next, let's create a component that will protect routes that require authentication:</p>
+        
+        <div class="code-block">
+            <pre><code>// src/components/ProtectedRoute.tsx
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+
+interface ProtectedRouteProps {
+  children: React.ReactNode;
+}
+
+export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
+  const { isAuthenticated } = useAuth();
+  
+  // If not authenticated, redirect to login
+  if (!isAuthenticated) {
+    return &lt;Navigate to="/login" replace /&gt;;
+  }
+  
+  // Otherwise, render the protected content
+  return &lt;&gt;{children}&lt;/&gt;;
+};</code></pre>
+        </div>
+        
+        <h3>Step 3: Building the Authentication Form Component</h3>
+        
+        <p>Let's create a form component with proper validation:</p>
+        
+        <div class="code-block">
+            <pre><code>// src/components/LoginForm.tsx
+import { useState, FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import './LoginForm.css';
+
+export const LoginForm = () => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [formErrors, setFormErrors] = useState&lt;{username?: string, password?: string}&gt;({});
+  
+  const { login, isLoading, error } = useAuth();
+  const navigate = useNavigate();
+  
+  // Form validation
+  const validateForm = () => {
+    const errors: {username?: string, password?: string} = {};
+    
+    if (!username.trim()) {
+      errors.username = 'Username is required';
+    }
+    
+    if (!password) {
+      errors.password = 'Password is required';
+    }
+    
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+  
+  // Handle form submission
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    
+    if (!validateForm()) return;
+    
+    try {
+      await login(username, password);
+      navigate('/map'); // Redirect to map page after login
+    } catch (err) {
+      // Error is handled in the AuthContext
+    }
+  };
+  
+  return (
+    &lt;div className="login-container"&gt;
+      &lt;h2&gt;Log in to ArcGIS Map&lt;/h2&gt;
+      
+      &lt;form onSubmit={handleSubmit} className="login-form"&gt;
+        {error && &lt;div className="form-error" role="alert"&gt;{error}&lt;/div&gt;}
+        
+        &lt;div className="form-group"&gt;
+          &lt;label htmlFor="username"&gt;Username&lt;/label&gt;
+          &lt;input
+            type="text"
+            id="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            disabled={isLoading}
+            aria-invalid={!!formErrors.username}
+            aria-describedby={formErrors.username ? "username-error" : undefined}
+          /&gt;
+          {formErrors.username && (
+            &lt;div className="field-error" id="username-error"&gt;{formErrors.username}&lt;/div&gt;
+          )}
+        &lt;/div&gt;
+        
+        &lt;div className="form-group"&gt;
+          &lt;label htmlFor="password"&gt;Password&lt;/label&gt;
+          &lt;input
+            type="password"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            disabled={isLoading}
+            aria-invalid={!!formErrors.password}
+            aria-describedby={formErrors.password ? "password-error" : undefined}
+          /&gt;
+          {formErrors.password && (
+            &lt;div className="field-error" id="password-error"&gt;{formErrors.password}&lt;/div&gt;
+          )}
+        &lt;/div&gt;
+        
+        &lt;button 
+          type="submit" 
+          disabled={isLoading} 
+          className="login-button"
+          aria-busy={isLoading}
+        &gt;
+          {isLoading ? 'Logging in...' : 'Log In'}
+        &lt;/button&gt;
+        
+        &lt;div className="demo-credentials"&gt;
+          &lt;p&gt;&lt;strong&gt;Demo credentials:&lt;/strong&gt;&lt;/p&gt;
+          &lt;p&gt;Username: &lt;code&gt;demo&lt;/code&gt; / Password: &lt;code&gt;password&lt;/code&gt;&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/form&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+        </div>
+        
+        <h3>Step 4: Adding the CSS for the Login Form</h3>
+        
+        <p>Create the CSS file for styling our login form:</p>
+        
+        <div class="code-block">
+            <pre><code>/* src/components/LoginForm.css */
+.login-container {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-container h2 {
+  margin-top: 0;
+  text-align: center;
+  color: var(--primary-color, #2d4059);
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.form-group input {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--primary-color, #2d4059);
+  box-shadow: 0 0 0 2px rgba(45, 64, 89, 0.2);
+}
+
+.form-group input[aria-invalid="true"] {
+  border-color: var(--error-color, #e63946);
+}
+
+.field-error, .form-error {
+  color: var(--error-color, #e63946);
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+.form-error {
+  background-color: #ffebee;
+  padding: 0.75rem;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.login-button {
+  padding: 0.75rem;
+  background-color: var(--primary-color, #2d4059);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.login-button:hover {
+  background-color: var(--primary-hover, #1a2a3a);
+}
+
+.login-button:disabled {
+  background-color: #9e9e9e;
+  cursor: not-allowed;
+}
+
+.demo-credentials {
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.demo-credentials code {
+  background-color: #e0e0e0;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+}</code></pre>
+        </div>
+        
+        <h3>Step 5: Setting Up the App Routes</h3>
+        
+        <p>Now, let's update our main App component to include the authentication provider and routes:</p>
+        
+        <div class="code-block">
+            <pre><code>// src/App.tsx
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
+import { ProtectedRoute } from './components/ProtectedRoute';
+import { LoginForm } from './components/LoginForm';
+import { MapView } from './components/MapView'; // We'll create this in the next tutorial
+import './App.css';
+
+function App() {
+  return (
+    &lt;AuthProvider&gt;
+      &lt;Router&gt;
+        &lt;div className="app-container"&gt;
+          &lt;header className="app-header"&gt;
+            &lt;h1&gt;React ArcGIS Map Application&lt;/h1&gt;
+          &lt;/header&gt;
+          
+          &lt;main className="app-content"&gt;
+            &lt;Routes&gt;
+              &lt;Route path="/login" element={&lt;LoginForm /&gt;} /&gt;
+              &lt;Route 
+                path="/map" 
+                element={
+                  &lt;ProtectedRoute&gt;
+                    &lt;MapView /&gt;
+                  &lt;/ProtectedRoute&gt;
+                } 
+              /&gt;
+              &lt;Route path="/" element={&lt;Navigate to="/login" replace /&gt;} /&gt;
+            &lt;/Routes&gt;
+          &lt;/main&gt;
+        &lt;/div&gt;
+      &lt;/Router&gt;
+    &lt;/AuthProvider&gt;
+  );
+}
+
+export default App;</code></pre>
+        </div>
+        
+        <h3>Step 6: Creating a Temporary MapView Component</h3>
+        
+        <p>Let's create a placeholder for our map component that we'll fully implement in the next tutorial:</p>
+        
+        <div class="code-block">
+            <pre><code>// src/components/MapView.tsx
+import { useAuth } from '../contexts/AuthContext';
+
+export const MapView = () => {
+  const { user, logout } = useAuth();
+  
+  return (
+    &lt;div&gt;
+      &lt;div className="user-bar"&gt;
+        &lt;p&gt;Welcome, {user?.username}!&lt;/p&gt;
+        &lt;button onClick={logout} className="logout-button"&gt;Log Out&lt;/button&gt;
+      &lt;/div&gt;
+      
+      &lt;div className="map-placeholder"&gt;
+        &lt;h2&gt;Map Will Appear Here&lt;/h2&gt;
+        &lt;p&gt;In the next tutorial, we'll implement the ArcGIS map in this space.&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+        </div>
+        
+        <h3>Why This Approach Works for Beginners</h3>
+        
+        <div class="card">
+            <h4>Benefits of Our Authentication Approach</h4>
+            <ul>
+                <li><strong>Simplicity</strong> - Easy to understand with minimal external dependencies</li>
+                <li><strong>Educational</strong> - Demonstrates core React patterns like Context and form handling</li>
+                <li><strong>Future-proof</strong> - Structure allows for easy integration with real auth services later</li>
+                <li><strong>Complete UX</strong> - Includes all important aspects: validation, loading states, and error handling</li>
+            </ul>
+        </div>
+        
+        <div class="collapsible">
+            <button type="button" class="collapsible-header" aria-expanded="false">
+                <h4>How to Upgrade to Real Authentication Later <span class="icon">+</span></h4>
+            </button>
+            <div class="collapsible-content" aria-hidden="true">
+                <p>When you're ready to implement real authentication, you'll primarily need to replace the mock login/logout functions with actual API calls:</p>
+                
+                <ol>
+                    <li>Replace the mock login logic with API calls to your authentication service (OAuth, JWT, etc.)</li>
+                    <li>Add proper token management for authentication</li>
+                    <li>Implement token refresh logic if using short-lived tokens</li>
+                    <li>Update error handling to deal with various network and auth server issues</li>
+                </ol>
+                
+                <p>The component structure and routes will remain largely the same, making the transition smooth.</p>
+            </div>
+        </div>
+        
+        <h3>Testing the Authentication System</h3>
+        
+        <p>Now that we've set up our authentication system, let's test it:</p>
+        
+        <ol>
+            <li>Start your development server with <code>npm run dev</code></li>
+            <li>Navigate to <code>http://localhost:5173</code> in your browser</li>
+            <li>You should be redirected to the login page</li>
+            <li>Try logging in with the demo credentials (username: <code>demo</code>, password: <code>password</code>)</li>
+            <li>After successful login, you should see the placeholder map page</li>
+            <li>Try refreshing the page - you should still be logged in</li>
+            <li>Click the logout button to test the logout functionality</li>
+        </ol>
+        
+        <h2>Next Steps</h2>
+        
+        <p>Now that we have a working authentication system, in the next section we'll build the actual map component using the ArcGIS API for JavaScript. We'll learn how to render maps, add layers, and interact with map features.</p>
+        
+        <div class="mt-3 mb-3">
+            <a href="setup.html" class="button">← Back to Setup</a>
+            <a href="map-component.html" class="button" style="float: right;">Next: Building the Map Component →</a>
+        </div>
+    </main>
+    
+    <footer class="mt-3 text-center">
+        <p>&copy; 2025 React Map Tutorials</p>
+    </footer>
+</body>
+</html>

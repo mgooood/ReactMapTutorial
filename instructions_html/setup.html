@@ -23,8 +23,19 @@
     <script src="js/clipboard.js" defer></script>
     <script src="js/collapsible.js" defer></script>
 </head>
-<body class="container">
+<body class="page-container">
     <a href="#main-content" class="skip-link visually-hidden">Skip to main content</a>
+    
+    <!-- Compact breadcrumb navigation -->
+    <nav aria-label="Breadcrumb" class="breadcrumb">
+      <div class="breadcrumb-content">
+        <ol>
+          <li><a href="intro.html" title="Introduction to React ArcGIS Map Tutorial">Intro</a></li>
+          <li aria-current="page" title="Setting Up Your Development Environment">Setup</li>
+        </ol>
+      </div>
+    </nav>
+    
     <!-- Hero banner section with image -->
     <div class="hero-banner" role="banner">
         <img src="images/hero-banner.png" alt="GIS Data Visualization Example" class="hero-image" width="1200" height="300">
@@ -447,7 +458,7 @@ a:hover {
     
     <div class="mt-3 mb-3">
         <a href="intro.html" class="button">← Back to Introduction</a>
-        <a href="login.html" class="button" style="float: right;">Next: Building the Login Page →</a>
+        <a href="authentication.html" class="button" style="float: right;">Next: Building the Authentication System →</a>
     </div>
     </main>
     
