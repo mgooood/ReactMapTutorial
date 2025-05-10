@@ -168,11 +168,17 @@ code {
 /* Code block with copy button styling */
 .code-block {
     position: relative;
-    background-color: #f8f9fa;
     border-radius: 6px;
     padding: 1rem;
     margin: 1rem 0;
     overflow: hidden;
+    /* Darker background for code examples by default */
+    background-color: #f0f0f0;
+}
+
+/* Command blocks get a lighter background for visual differentiation */
+.code-block.command {
+    background-color: #f8f9fa;
 }
 
 .code-block pre {
