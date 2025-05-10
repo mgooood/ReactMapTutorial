@@ -3,30 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- SEO meta tags - replace content with specific information for each page -->
+    <meta name="description" content="TUTORIAL_DESCRIPTION">
+    <meta name="keywords" content="React 19, ArcGIS maps, web development, JavaScript, TypeScript, ADDITIONAL_KEYWORDS">
+    
     <title>TUTORIAL_TITLE | React Tutorials</title>
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="TUTORIAL_TITLE - React Tutorials">
+    <meta property="og:description" content="TUTORIAL_DESCRIPTION">
+    <meta property="og:image" content="images/hero-banner.png">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="TUTORIAL_TITLE">
+    <meta name="twitter:description" content="TUTORIAL_DESCRIPTION">
+    
     <!-- CSS variables for theming and consistent styling -->
     <link rel="stylesheet" href="../css/style.css">
     <!-- Tutorial-specific styles can be included here -->
+    
+    <!-- JavaScript with defer for better performance -->
+    <script src="../js/clipboard.js" defer></script>
+    <script src="../js/collapsible.js" defer></script>
 </head>
-<body>
+<body class="container">
+    <!-- Accessibility: Skip to main content link -->
+    <a href="#main-content" class="skip-link visually-hidden">Skip to main content</a>
     <!-- Header with navigation -->
-    <header class="site-header">
+    <header class="site-header" role="banner">
         <div class="container">
-            <nav class="main-nav">
+            <nav class="main-nav" aria-label="Main navigation">
                 <div class="logo">React Tutorials</div>
                 <ul class="nav-links">
                     <li><a href="index.html">Home</a></li>
-                    <li><a href="#" class="current">Tutorials</a></li>
+                    <li><a href="#" class="current" aria-current="page">Tutorials</a></li>
                     <li><a href="#">Resources</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
-    <main class="container tutorial-content">
+    <main id="main-content" class="container tutorial-content">
         <!-- Hero banner section with image -->
         <div class="hero-banner">
-            <img src="../images/HERO_IMAGE_PATH" alt="HERO_IMAGE_ALT" class="hero-image">
+            <img src="../images/HERO_IMAGE_PATH" alt="HERO_IMAGE_ALT" class="hero-image" width="1200" height="300">
             <div class="hero-overlay">
                 <h1>TUTORIAL_TITLE</h1>
             </div>
@@ -34,7 +56,7 @@
         
         <!-- Tutorial navigation sidebar -->
         <div class="tutorial-layout">
-            <aside class="tutorial-nav">
+            <aside class="tutorial-nav" role="navigation" aria-label="Tutorial navigation">
                 <h3>Tutorial Sections</h3>
                 <ul>
                     <li><a href="intro.html" class="current">Introduction</a></li>
@@ -48,9 +70,9 @@
                 </ul>
             </aside>
             
-            <article class="tutorial-article">
+            <article class="tutorial-article" role="region" aria-labelledby="section-title">
                 <!-- Tutorial content goes here -->
-                <h2>SECTION_TITLE</h2>
+                <h2 id="section-title">SECTION_TITLE</h2>
                 
                 <p>CONTENT_PLACEHOLDER</p>
                 
@@ -63,7 +85,7 @@
         </div>
     </main>
 
-    <footer class="site-footer">
+    <footer class="site-footer" role="contentinfo">
         <div class="container">
             <p>&copy; 2025 React Tutorials. All rights reserved.</p>
         </div>

@@ -3,18 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn how to set up a React 19 development environment with ArcGIS maps integration. Step-by-step tutorial for beginners.">
+    <meta name="keywords" content="React 19, ArcGIS maps, Vite, TypeScript, development environment, React tutorial">
+    
     <title>Setting Up the Development Environment | React ArcGIS Map Tutorial</title>
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Setting Up React 19 with ArcGIS - Developer Tutorial">
+    <meta property="og:description" content="Step-by-step guide to setting up a React 19 development environment for ArcGIS map applications.">
+    <meta property="og:image" content="images/hero-banner.png">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Setting Up React 19 with ArcGIS">
+    <meta name="twitter:description" content="Step-by-step guide to setting up a React 19 development environment for ArcGIS map applications.">
+    
     <link rel="stylesheet" href="css/style.css">
-    <script src="js/clipboard.js"></script>
+    <script src="js/clipboard.js" defer></script>
+    <script src="js/collapsible.js" defer></script>
 </head>
 <body class="container">
+    <a href="#main-content" class="skip-link visually-hidden">Skip to main content</a>
     <!-- Hero banner section with image -->
-    <div class="hero-banner">
-        <img src="images/hero-banner.jpg" alt="GIS Data Visualization Example" class="hero-image">
+    <div class="hero-banner" role="banner">
+        <img src="images/hero-banner.png" alt="GIS Data Visualization Example" class="hero-image" width="1200" height="300">
         <div class="hero-overlay">
             <h1>Setting Up Your Development Environment</h1>
         </div>
     </div>
+    
+    <main id="main-content">
     
     <h2>Prerequisites</h2>
     
@@ -265,6 +284,8 @@
     
     <h2>Basic Project Structure</h2>
     
+
+    
     <p>Now that we have our project set up, let's understand the basic structure that Vite has created for us:</p>
     
     <div class="card">
@@ -289,6 +310,108 @@
     
     <p>We'll primarily be working in the <code>src</code> directory, where we'll add our components, styles, and map integration code.</p>
     
+    <!-- Optional Cleanup Section (Collapsible) -->
+    <div class="collapsible">
+        <div class="collapsible-header" tabindex="0" aria-expanded="false" aria-controls="cleanup-content">
+            <h3>Cleaning Up the Default Project Structure <span class="optional-tag">Optional</span></h3>
+            <div class="collapsible-indicator" aria-hidden="true">▼</div>
+        </div>
+        <div id="cleanup-content" class="collapsible-content" aria-hidden="true">
+            <p>After generating our React project, it's a good idea to clean up some of the default files and content that we won't need for our mapping application. Simplifying the starter code gives us a cleaner foundation to build upon.</p>
+            
+            <div class="card">
+                <h4>Files to Remove or Modify</h4>
+                <ul>
+                    <li><code>public/vite.svg</code> - We'll replace this with our own favicon later</li>
+                    <li><code>src/assets/react.svg</code> - We don't need the example React logo</li>
+                    <li><code>src/assets/</code> - This folder can be removed if empty after removing react.svg</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h4>Simplify These Files</h4>
+                <ul>
+                    <li><code>index.html</code> - Clean up references to Vite and unnecessary metadata</li>
+                    <li><code>src/App.tsx</code> - Remove the counter example, logos, and unused imports</li>
+                    <li><code>src/App.css</code> - Replace with a minimal styling foundation</li>
+                    <li><code>src/index.css</code> - Clean up unnecessary default styles</li>
+                    <li><code>src/main.tsx</code> - Remove any unnecessary imports or configurations</li>
+                </ul>
+            </div>
+
+            <h4>Simplified App Component</h4>
+            <div class="code-block">
+                <pre><code>// src/App.tsx
+import './App.css'
+
+function App() {
+  return (
+    &lt;div className="app-container"&gt;
+      &lt;header className="app-header"&gt;
+        &lt;h1&gt;React ArcGIS Map Application&lt;/h1&gt;
+      &lt;/header&gt;
+      &lt;main className="app-content"&gt;
+        &lt;p&gt;Welcome to our mapping application&lt;/p&gt;
+        {/* Our map component will go here */}
+      &lt;/main&gt;
+    &lt;/div&gt;
+  )
+}
+
+export default App</code></pre>
+            </div>
+
+            <h4>Cleaned index.html</h4>
+            <div class="code-block">
+                <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+  &lt;head&gt;
+    &lt;meta charset="UTF-8" /&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+    &lt;title&gt;React ArcGIS Map&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div id="root"&gt;&lt;/div&gt;
+    &lt;script type="module" src="/src/main.tsx"&gt;&lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+            </div>
+
+            <h4>Simplified App.css</h4>
+            <div class="code-block">
+                <pre><code>/* src/App.css */
+.app-container {
+  margin: 0 auto;
+  max-width: 1280px;
+  padding: 2rem;
+  text-align: center;
+}
+
+.app-header {
+  margin-bottom: 2rem;
+}
+
+.app-content {
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding: 2rem;
+}</code></pre>
+            </div>
+
+            <div class="card">
+                <h4>Benefits of Cleaning Up</h4>
+                <ul>
+                    <li><strong>Simplicity</strong> - Makes it easier to understand the core structure</li>
+                    <li><strong>Focus</strong> - Removes distractions like the counter example</li>
+                    <li><strong>Clean Slate</strong> - Provides a better foundation for our mapping app</li>
+                    <li><strong>Learning</strong> - Creates an opportunity to understand each piece you add</li>
+                </ul>
+            </div>
+
+            <p>By starting with a clean, minimal template, we can build our application step-by-step, adding only what we need. This approach makes it easier to understand how each component contributes to the whole.</p>
+        </div>
+    </div>
+    
     <h2>Next Steps</h2>
     
     <p>You've successfully set up your development environment for creating a React 19 application with ArcGIS maps! In the next section, we'll expand on this structure to support our specific requirements for a map application with authentication.</p>
@@ -297,8 +420,9 @@
         <a href="intro.html" class="button">← Back to Introduction</a>
         <a href="project-structure.html" class="button" style="float: right;">Next: Project Structure →</a>
     </div>
+    </main>
     
-    <footer class="mt-3 text-center">
+    <footer class="mt-3 text-center" role="contentinfo">
         <p>&copy; 2025 React Map Tutorials</p>
     </footer>
 </body>
