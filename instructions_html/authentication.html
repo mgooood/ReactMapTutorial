@@ -77,7 +77,7 @@
             </div>
         </div>
         
-        <p>Create a new directory and file for our authentication context:</p>
+        <div class="section-heading">Create a new directory and file for our authentication context:</div>
         
         <div class="card">
             <div class="code-block command">
@@ -91,7 +91,16 @@
             </div>
         </div>
         
-        <p>Now, let's implement our authentication context:</p>
+        <p>Now, let's implement our authentication context. Here's how it will work:</p>
+
+        <ul>
+            <li>State setup keeps track of user, loading status, and errors</li>
+            <li>useEffect runs once when the app loads and restores a saved user from localStorage</li>
+            <li>login fakes a 1-second API call, checks credentials, stores the user both in state and localStorage, or sets an error</li>
+            <li>logout clears the user from state and localStorage</li>
+            <li>value bundles everything (user, flags, and functions) into one object</li>
+            <li>We render &lt;AuthContext.Provider&gt; around children so any nested component can read that value</li>
+        </ul>
         
         <div class="card">
             <div class="code-block">
@@ -101,9 +110,12 @@
 // - createContext: Creates a way to share login information between different parts of the app
 // - useContext: Helps components access the shared login information
 // - useState: Keeps track of information that can change (like user details or error messages)
-// - ReactNode: A TypeScript type that lets us accept any valid React content as children
 // - useEffect: Runs code when the component loads (used to check if user was previously logged in)
-import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
+
+// Type imports should be separate from value imports for best practices
+// - ReactNode: A TypeScript type that lets us accept any valid React content as children
+import type { ReactNode } from 'react';
 
 // Define types for our authentication
 interface User {
@@ -223,7 +235,37 @@ export const useAuth = () => {
         
         <h3>Step 2: Creating the Protected Route Component</h3>
         
-        <p>Next, let's create a component that will protect routes that require authentication:</p>
+        <p>Next, let's create a component that will protect routes that require authentication. Here's how it works:</p>
+
+        <ul>
+            <li>The component accepts children (the protected content) as a prop</li>
+            <li>It checks if the user is authenticated using our useAuth hook</li>
+            <li>If the user isn't logged in, it automatically redirects to the login page</li>
+            <li>If the user is logged in, it renders the protected content (children)</li>
+            <li>This creates a security wrapper we can place around any component that requires authentication</li>
+        </ul>
+        
+        <div class="section-heading">Install React Router for navigation:</div>
+        
+        <div class="card">
+            <div class="code-block command">
+                <code>npm install react-router-dom</code>
+            </div>
+        </div>
+        
+        <div class="section-heading">Create a new file for our protected route component:</div>
+        
+        <div class="card">
+            <div class="code-block command">
+                <code>mkdir -p src/components</code>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="code-block command">
+                <code>touch src/components/ProtectedRoute.tsx</code>
+            </div>
+        </div>
         
         <div class="card">
             <div class="code-block">
@@ -235,8 +277,12 @@ export const useAuth = () => {
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
+// Note: We're using React.ReactNode from the global React namespace
+// Another approach would be to import it directly with: import type { ReactNode } from 'react';
+
+// Define our component props with proper type imports
 interface ProtectedRouteProps {
-  children: React.ReactNode;
+  children: React.ReactNode; // We use React namespace here since we're not importing ReactNode directly
 }
 
 export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
@@ -285,7 +331,24 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
         
         <h3>Step 3: Building the Authentication Form Component</h3>
         
-        <p>Let's create a form component with proper validation:</p>
+        <p>Let's create a form component with proper validation. Here's how it works:</p>
+
+        <ul>
+            <li>State variables track the username, password, and any validation errors</li>
+            <li>The validateForm function checks for required fields and updates error messages</li>
+            <li>handleSubmit prevents the default form submission, validates inputs, and calls the login function</li>
+            <li>After successful login, it navigates to the map page</li>
+            <li>The form provides visual feedback with error messages and loading states</li>
+            <li>We include demo credentials in the UI for testing purposes</li>
+        </ul>
+        
+        <div class="section-heading">Create a new file for our login form component:</div>
+        
+        <div class="card">
+            <div class="code-block command">
+                <code>touch src/components/LoginForm.tsx</code>
+            </div>
+        </div>
         
         <div class="card">
             <div class="code-block">
@@ -293,14 +356,17 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 
 // These imports provide functionality for our login form:
 // - useState: Helps us store and update the username, password, and any error messages
-// - FormEvent: A type that represents when a form is submitted
 // - useNavigate: Lets us change pages after successful login
 // - useAuth: Gives us access to login/logout functions
 // - LoginForm.css: The styles for our login form
-import { useState, FormEvent } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import './LoginForm.css';
+
+// Type imports should be separate from value imports for best practices
+// - FormEvent: A type that represents when a form is submitted
+import type { FormEvent } from 'react';
 
 export const LoginForm = () => {
   const [username, setUsername] = useState('');
@@ -432,7 +498,15 @@ export const LoginForm = () => {
         
         <h3>Step 4: Adding the CSS for the Login Form</h3>
         
-        <p>Create the CSS file for styling our login form:</p>
+        <p>Let's style our login form to make it user-friendly and mobile-first:</p>
+        
+        <div class="section-heading">Create a CSS file for our login form:</div>
+        
+        <div class="card">
+            <div class="code-block command">
+                <code>touch src/components/LoginForm.css</code>
+            </div>
+        </div>
         
         <div class="card">
             <div class="code-block">
@@ -567,7 +641,17 @@ export const LoginForm = () => {
         
         <h3>Step 5: Setting Up the App Routes</h3>
         
-        <p>Now, let's update our main App component to include the authentication provider and routes:</p>
+        <p>Now, let's update our main App component to include the authentication provider and routes. Here's how it works:</p>
+
+        <ul>
+            <li>We wrap our entire application in the AuthProvider so authentication state is available everywhere</li>
+            <li>React Router handles navigation between different pages</li>
+            <li>We define three routes: login page, protected map page, and a default redirect</li>
+            <li>The map route is wrapped in our ProtectedRoute component to restrict access</li>
+            <li>The root path (/) automatically redirects users to the login page</li>
+        </ul>
+        
+        <div class="section-heading">Update the App.tsx file with authentication routes:</div>
         
         <div class="card">
             <div class="code-block">
@@ -580,6 +664,9 @@ export const LoginForm = () => {
 // - LoginForm: Our login screen component
 // - MapView: The map component we'll create in the next tutorial
 // - App.css: The main styles for our entire app
+//
+// Note: This component doesn't need any type-only imports. If it did, we would follow best
+// practices by using the 'import type' syntax as shown in previous components.
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
@@ -657,6 +744,12 @@ export default App;</code></pre>
         <p>Let's create a placeholder for our map component that we'll fully implement in the next tutorial:</p>
         
         <div class="card">
+            <div class="code-block command">
+                <code>touch src/components/MapView.tsx</code>
+            </div>
+        </div>
+        
+        <div class="card">
             <div class="code-block">
             <pre><code>// src/components/MapView.tsx
 import { useAuth } from '../contexts/AuthContext';
@@ -705,7 +798,7 @@ export const MapView = () => {
             <p>In the next tutorial, we'll replace this placeholder with actual map functionality using the ArcGIS JavaScript API. The authentication system we've built will ensure that only authenticated users can access and interact with the map.</p>
         </div>
         
-        <h3>Why This Approach Works for Beginners</h3>
+        <h3>Why This Approach Works</h3>
         
         <div class="card">
             <h4>Benefits of Our Authentication Approach</h4>
@@ -755,7 +848,7 @@ export const MapView = () => {
         
         <div class="mt-3 mb-3">
             <a href="setup.html" class="button">← Back to Setup</a>
-            <a href="map-component.html" class="button" style="float: right;">Next: Building the Map Component →</a>
+            <a href="map-integration.html" class="button" style="float: right;">Next: Integrating ArcGIS Maps →</a>
         </div>
     </main>
     

@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn how to integrate ArcGIS maps into your React application with this step-by-step tutorial for creating interactive mapping features.">
+    <meta name="keywords" content="React, ArcGIS, mapping, GIS, JavaScript API, React 19, interactive maps, web maps, TypeScript">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Integrating ArcGIS Maps | React ArcGIS Map Tutorial">
+    <meta property="og:description" content="Add powerful mapping capabilities to your React application with the ArcGIS JavaScript API in this beginner-friendly guide.">
+    <meta property="og:image" content="images/hero-banner.png">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Integrating ArcGIS Maps | React ArcGIS Map Tutorial">
+    <meta name="twitter:description" content="Add powerful mapping capabilities to your React application with the ArcGIS JavaScript API in this beginner-friendly guide.">
+    
+    <title>Integrating ArcGIS Maps | React ArcGIS Map Tutorial</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/clipboard.js" defer></script>
+    <script src="js/collapsible.js" defer></script>
+</head>
+<body class="page-container">
+    <a href="#main-content" class="skip-link visually-hidden">Skip to main content</a>
+    
+    <!-- Compact breadcrumb navigation -->
+    <nav aria-label="Breadcrumb" class="breadcrumb">
+      <div class="breadcrumb-content">
+        <ol>
+          <li><a href="intro.html" title="Introduction to React ArcGIS Map Tutorial">Intro</a></li>
+          <li><a href="setup.html" title="Setting Up Your Development Environment">Setup</a></li>
+          <li><a href="authentication.html" title="Setting Up Your Authentication System">Auth</a></li>
+          <li aria-current="page" title="Integrating ArcGIS Maps">Maps</li>
+        </ol>
+      </div>
+    </nav>
+    
+    <!-- Hero banner section with image -->
+    <div class="hero-banner" role="banner">
+        <img src="images/hero-banner.png" alt="GIS Data Visualization Example" class="hero-image" width="1200" height="300">
+        <div class="hero-overlay">
+            <h1>Integrating ArcGIS Maps</h1>
+        </div>
+    </div>
+    
+    <main id="main-content">
+        
+        <p>In this section, we'll replace our placeholder map component with a fully functional ArcGIS map. We'll learn how to use the ArcGIS API for JavaScript to create interactive maps in our React application.</p>
+        
+        <div class="info-box">
+            <p><strong>Note:</strong> This tutorial uses the <code>@arcgis/core</code> package, which is the recommended way to use the ArcGIS API for JavaScript in modern React applications. This package allows for more efficient tree-shaking and better performance compared to the older script tag approach.</p>
+        </div>
+        
+        <h3>What We'll Build</h3>
+        
+        <p>In this tutorial, we'll create a map component that:</p>
+        
+        <ul>
+            <li>Displays a base map with configurable options</li>
+            <li>Allows users to zoom and pan around the map</li>
+            <li>Shows the user's current location (with permission)</li>
+            <li>Contains a simple point of interest with a popup</li>
+            <li>Implements responsive design for various screen sizes</li>
+        </ul>
+        
+        <h3>Step 1: Understanding ArcGIS in React</h3>
+        
+        <p>Before we begin, let's understand how the ArcGIS API works with React:</p>
+        
+        <div class="collapsible">
+            <button type="button" class="collapsible-header" aria-expanded="false">
+                <h4>How ArcGIS and React Work Together <span class="icon">+</span></h4>
+            </button>
+            <div class="collapsible-content" aria-hidden="true">
+                <p>The ArcGIS API for JavaScript is a powerful mapping library that traditionally works with direct DOM manipulation. React, however, uses a virtual DOM and declarative programming model. To bridge these two approaches, we need to:</p>
+                
+                <ol>
+                    <li>Create a container ref that React won't modify</li>
+                    <li>Initialize the map in a useEffect hook when the component mounts</li>
+                    <li>Clean up map resources when the component unmounts</li>
+                    <li>Be careful about re-renders to avoid creating multiple map instances</li>
+                </ol>
+                
+                <p>This approach lets us harness the full power of ArcGIS while maintaining React's component-based architecture.</p>
+            </div>
+        </div>
+        
+        <h3>Step 2: Installing ArcGIS Dependencies</h3>
+        
+        <p>First, we need to install the ArcGIS JavaScript API package:</p>
+        
+        <div class="section-heading">Install ArcGIS core package:</div>
+        
+        <div class="card">
+            <div class="code-block command">
+                <code>npm install @arcgis/core</code>
+            </div>
+        </div>
+        
+        <p>This package provides all the necessary modules for creating and configuring maps, layers, views, and other GIS components.</p>
+        
+        <h3>Step 3: Creating the Map Component</h3>
+        
+        <p>Now, let's replace our placeholder with a real map implementation. Here's how it will work:</p>
+        
+        <ul>
+            <li>We'll use the useRef hook to create a reference to the DOM element for the map</li>
+            <li>The useEffect hook will initialize the map when the component mounts</li>
+            <li>We'll provide a cleanup function to destroy the map when the component unmounts</li>
+            <li>User information from the authentication context remains visible at the top</li>
+        </ul>
+        
+        <div class="section-heading">Update the MapView component:</div>
+        
+        <div class="card">
+            <div class="code-block">
+                <pre><code>// src/components/MapView.tsx
+
+// These imports provide the core functionality:
+// - useRef, useEffect: React hooks for DOM references and lifecycle management
+// - useAuth: Our custom hook for accessing authentication information
+// - ArcGIS modules: Essential components for creating and configuring the map
+import { useRef, useEffect } from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import Map from '@arcgis/core/Map';
+import MapView from '@arcgis/core/views/MapView';
+import Graphic from '@arcgis/core/Graphic';
+import Point from '@arcgis/core/geometry/Point';
+import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
+import PopupTemplate from '@arcgis/core/PopupTemplate';
+
+// Import the CSS for the ArcGIS API - this is essential for the map to display correctly
+import '@arcgis/core/assets/esri/themes/light/main.css';
+import './MapView.css'; // We'll create this file for additional styling
+
+export const MapViewComponent = () => {
+  // Get authentication information
+  const { user, logout } = useAuth();
+  
+  // Create a reference to the map container div
+  const mapRef = useRef<HTMLDivElement>(null);
+  
+  // Store the MapView instance for cleanup
+  const viewRef = useRef<MapView | null>(null);
+  
+  useEffect(() => {
+    // Initialize the map only when the component mounts and mapRef is available
+    if (mapRef.current) {
+      // Create a new Map instance with a basemap
+      const map = new Map({
+        basemap: 'topo-vector' // Other options: 'satellite', 'hybrid', 'streets', etc.
+      });
+      
+      // Create a new MapView instance
+      const view = new MapView({
+        container: mapRef.current,
+        map: map,
+        center: [-100, 40], // Longitude, latitude
+        zoom: 3 // Initial zoom level
+      });
+      
+      // Add a point of interest as an example
+      const point = new Point({
+        longitude: -100,
+        latitude: 40
+      });
+      
+      const markerSymbol = new SimpleMarkerSymbol({
+        color: [226, 119, 40], // Orange
+        outline: {
+          color: [255, 255, 255], // White
+          width: 2
+        },
+        size: 12
+      });
+      
+      const pointGraphic = new Graphic({
+        geometry: point,
+        symbol: markerSymbol,
+        popupTemplate: new PopupTemplate({
+          title: "Example Location",
+          content: "This is a sample point of interest. In a real application, this could show data from your API."
+        })
+      });
+      
+      // Add the graphic to the map view
+      view.graphics.add(pointGraphic);
+      
+      // Store the view reference for cleanup
+      viewRef.current = view;
+      
+      // Optional: Add user location if they grant permission
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { longitude, latitude } = position.coords;
+          
+          // Create a point for user's location
+          const userLocationPoint = new Point({
+            longitude,
+            latitude
+          });
+          
+          // Create a symbol for user's location
+          const userLocationSymbol = new SimpleMarkerSymbol({
+            color: [0, 122, 194], // Blue
+            outline: {
+              color: [255, 255, 255], // White
+              width: 2
+            },
+            size: 12
+          });
+          
+          // Create a graphic for user's location
+          const userLocationGraphic = new Graphic({
+            geometry: userLocationPoint,
+            symbol: userLocationSymbol,
+            popupTemplate: new PopupTemplate({
+              title: "Your Location",
+              content: "You are here!"
+            })
+          });
+          
+          // Add the graphic to the map view
+          view.graphics.add(userLocationGraphic);
+          
+          // Center the map on user's location
+          view.goTo({
+            target: userLocationPoint,
+            zoom: 8
+          });
+        },
+        (error) => {
+          console.log('Geolocation error:', error);
+          // Continue without user location if permission is denied
+        }
+      );
+    }
+    
+    // Cleanup function to destroy the map when component unmounts
+    return () => {
+      if (viewRef.current) {
+        viewRef.current.destroy();
+        viewRef.current = null;
+      }
+    };
+  }, []); // Empty dependency array ensures this only runs once on mount
+  
+  return (
+    <div className="map-container">
+      <div className="user-bar">
+        <p>Welcome, {user?.username}!</p>
+        <button onClick={logout} className="logout-button">Log Out</button>
+      </div>
+      
+      <div ref={mapRef} className="map-view"></div>
+    </div>
+  );
+};</code></pre>
+            </div>
+        </div>
+        
+        <div class="info-box">
+            <h4>Key Concepts in the Map Component</h4>
+            <ul>
+                <li><strong>Refs</strong>: Using React's useRef to safely manage the Map instance</li>
+                <li><strong>useEffect Cleanup</strong>: Properly destroying the map to prevent memory leaks</li>
+                <li><strong>ArcGIS Elements</strong>: Map, MapView, Point, Graphic and PopupTemplate basics</li>
+                <li><strong>Geolocation API</strong>: Using the browser's geolocation feature for user location</li>
+            </ul>
+        </div>
+        
+        <h3>Step 4: Styling the Map Component</h3>
+        
+        <p>Let's create a CSS file to style our map and ensure it displays correctly:</p>
+        
+        <div class="section-heading">Create a CSS file for the map component:</div>
+        
+        <div class="card">
+            <div class="code-block command">
+                <code>touch src/components/MapView.css</code>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="code-block">
+                <pre><code>/* src/App.css updates */
+/* Add these styles to your App.css file */
+.app-container {
+  height: 100vh; /* Make the app container take the full viewport height */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Prevent scrolling */
+}
+
+.app-header {
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.app-content {
+  flex: 1; /* Make content area take all available space */
+  overflow: hidden; /* Prevent content scrolling */
+}
+
+/* src/components/MapView.css */
+.map-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Take full height of parent */
+  width: 100%;
+  overflow: hidden; /* Prevent container scrolling */
+}
+
+.user-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+  /* Natural height based on content */
+}
+
+.logout-button {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.logout-button:hover {
+  background-color: #c0392b;
+}
+
+.map-view {
+  flex: 1; /* Use flex: 1 instead of flex-grow: 1 for better support */
+  position: relative;
+  /* No fixed heights - will fill available space */
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 768px) {
+  .user-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .user-bar p {
+    margin-bottom: 0.5rem;
+  }
+}</code></pre>
+            </div>
+        </div>
+        
+        <p>This CSS ensures that the map displays properly and responsively on different screen sizes while maintaining a consistent user interface.</p>
+        
+        <h3>Step 5: Updating the App Component</h3>
+        
+        <p>Now let's make sure our App.tsx imports are correct for the renamed component:</p>
+        
+        <div class="section-heading">Update the App.tsx imports:</div>
+        
+        <div class="card">
+            <div class="code-block">
+                <pre><code>// Update the import in src/App.tsx
+import { MapViewComponent } from './components/MapView';</code></pre>
+            </div>
+        </div>
+        
+        <p>Also update the component usage:</p>
+        
+        <div class="card">
+            <div class="code-block">
+                <pre><code>&lt;Route 
+  path="/map" 
+  element={
+    &lt;ProtectedRoute>
+      &lt;MapViewComponent />
+    &lt;/ProtectedRoute>
+  } 
+/></code></pre>
+            </div>
+        </div>
+        
+        <h3>Step 6: Understanding MapView Configurations</h3>
+        
+        <div class="collapsible">
+            <button type="button" class="collapsible-header" aria-expanded="false">
+                <h4>Basemap Options <span class="icon">+</span></h4>
+            </button>
+            <div class="collapsible-content" aria-hidden="true">
+                <p>ArcGIS provides several built-in basemaps that you can use in your application. Here are some common options:</p>
+                
+                <ul>
+                    <li><code>"streets"</code> - Detailed streets and transit networks</li>
+                    <li><code>"satellite"</code> - Aerial imagery</li>
+                    <li><code>"hybrid"</code> - Aerial imagery with labels</li>
+                    <li><code>"topo-vector"</code> - Topographic map with vector tiles</li>
+                    <li><code>"gray-vector"</code> - Grayscale reference map</li>
+                    <li><code>"dark-gray-vector"</code> - Dark theme reference map</li>
+                    <li><code>"oceans"</code> - Detailed bathymetry and water features</li>
+                    <li><code>"national-geographic"</code> - Classic National Geographic style</li>
+                    <li><code>"osm"</code> - OpenStreetMap data</li>
+                </ul>
+                
+                <p>You can change the basemap by modifying the <code>basemap</code> property when creating a new Map instance.</p>
+            </div>
+        </div>
+        
+        <div class="collapsible">
+            <button type="button" class="collapsible-header" aria-expanded="false">
+                <h4>Map View Properties <span class="icon">+</span></h4>
+            </button>
+            <div class="collapsible-content" aria-hidden="true">
+                <p>The MapView constructor accepts several properties to configure the initial view:</p>
+                
+                <ul>
+                    <li><code>container</code> - The HTML element that will contain the map</li>
+                    <li><code>map</code> - The Map instance to display</li>
+                    <li><code>center</code> - The initial center point (longitude, latitude)</li>
+                    <li><code>zoom</code> - The initial zoom level (0-23, where 0 is zoomed all the way out)</li>
+                    <li><code>extent</code> - The initial visible area (alternative to center+zoom)</li>
+                    <li><code>constraints</code> - Restrictions on navigation (min/max zoom, etc.)</li>
+                    <li><code>ui</code> - Configuration for UI components (zoom buttons, compass, etc.)</li>
+                    <li><code>popup</code> - Configuration for popup windows</li>
+                </ul>
+                
+                <p>You can customize these properties to suit your application's needs.</p>
+            </div>
+        </div>
+        
+        <h3>Step 7: Advanced Map Features (Optional)</h3>
+        
+        <p>For those interested in adding more advanced features to their maps, here are some additional components you can explore:</p>
+        
+        <div class="collapsible">
+            <button type="button" class="collapsible-header" aria-expanded="false">
+                <h4>Adding Layers <span class="icon">+</span></h4>
+            </button>
+            <div class="collapsible-content" aria-hidden="true">
+                <p>Layers allow you to add additional data to your map. Here's an example of adding a feature layer:</p>
+                
+                <pre><code>import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
+
+// Create a feature layer
+const featureLayer = new FeatureLayer({
+  url: 'https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Major_Cities/FeatureServer/0',
+  outFields: ['*'],
+  popupTemplate: {
+    title: '{NAME}, {ST}',
+    content: 'Population: {POPULATION}'
+  }
+});
+
+// Add the layer to the map
+map.add(featureLayer);</code></pre>
+                
+                <p>This example adds a layer showing major US cities with population information in popups.</p>
+            </div>
+        </div>
+        
+        <div class="collapsible">
+            <button type="button" class="collapsible-header" aria-expanded="false">
+                <h4>Adding UI Components <span class="icon">+</span></h4>
+            </button>
+            <div class="collapsible-content" aria-hidden="true">
+                <p>You can add various UI components to enhance your map's functionality:</p>
+                
+                <pre><code>import BasemapToggle from '@arcgis/core/widgets/BasemapToggle';
+import ScaleBar from '@arcgis/core/widgets/ScaleBar';
+import Legend from '@arcgis/core/widgets/Legend';
+
+// Add a basemap toggle widget
+const basemapToggle = new BasemapToggle({
+  view: view,
+  nextBasemap: 'satellite'
+});
+view.ui.add(basemapToggle, 'bottom-right');
+
+// Add a scale bar
+const scaleBar = new ScaleBar({
+  view: view,
+  unit: 'metric'
+});
+view.ui.add(scaleBar, 'bottom-left');
+
+// Add a legend
+const legend = new Legend({
+  view: view
+});
+view.ui.add(legend, 'top-right');</code></pre>
+                
+                <p>These widgets provide additional functionality like changing basemaps, showing scale, and displaying a legend for your layers.</p>
+            </div>
+        </div>
+        
+        <h3>Testing the Map Component</h3>
+        
+        <p>Now let's test our map implementation:</p>
+        
+        <ol>
+            <li>Make sure all the files are saved properly</li>
+            <li>Start your development server with <code>npm run dev</code></li>
+            <li>Navigate to <code>http://localhost:5173</code> in your browser</li>
+            <li>Log in using the demo credentials (username: <code>demo</code>, password: <code>password</code>)</li>
+            <li>You should now see a map displayed with the configured basemap</li>
+            <li>If the browser asks for location permissions, allow it to see your location on the map</li>
+            <li>Try interacting with the map by zooming, panning, and clicking on the point of interest</li>
+        </ol>
+        
+        <div class="info-box">
+            <h4>Troubleshooting Common Issues</h4>
+            <ul>
+                <li><strong>Map Doesn't Display</strong>: Check that the CSS for both the ArcGIS API and your component is properly imported</li>
+                <li><strong>Console Errors</strong>: Look for any import paths that might be incorrect</li>
+                <li><strong>Performance Issues</strong>: Make sure you're properly cleaning up the map view when the component unmounts</li>
+                <li><strong>Mobile Display Problems</strong>: Verify that your CSS is properly handling responsive design</li>
+            </ul>
+        </div>
+        
+        <h3>What We've Learned</h3>
+        
+        <div class="card">
+            <h4>Key Takeaways</h4>
+            <ul>
+                <li><strong>ArcGIS Integration</strong> - How to incorporate powerful mapping capabilities in React</li>
+                <li><strong>Lifecycle Management</strong> - Creating and cleaning up map resources properly</li>
+                <li><strong>React Patterns</strong> - Using refs and effects to manage external libraries</li>
+                <li><strong>Map Configuration</strong> - Setting up basemaps, points of interest, and popups</li>
+                <li><strong>Responsive Design</strong> - Ensuring maps work well on different devices</li>
+            </ul>
+        </div>
+        
+        <h2>Next Steps</h2>
+        
+        <p>Now that we have a functional map integrated with our authentication system, in the next section we'll learn how to style our application using Esri's Calcite Design System for a professional look and feel.</p>
+        
+        <div class="mt-3 mb-3">
+            <a href="authentication.html" class="button">← Back to Authentication</a>
+            <a href="styling.html" class="button" style="float: right;">Next: Styling with Calcite →</a>
+        </div>
+    </main>
+    
+    <footer class="mt-3 text-center">
+        <p>&copy; 2025 React Map Tutorials</p>
+    </footer>
+</body>
+</html>
