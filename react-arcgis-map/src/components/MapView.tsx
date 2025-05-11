@@ -12,6 +12,7 @@ import Graphic from '@arcgis/core/Graphic';
 import Point from '@arcgis/core/geometry/Point';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 import PopupTemplate from '@arcgis/core/PopupTemplate';
+import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 
 // Import the CSS for the ArcGIS API - this is essential for the map to display correctly
 import '@arcgis/core/assets/esri/themes/light/main.css';
@@ -66,6 +67,18 @@ export const MapViewComponent = () => {
           content: "This is a sample point of interest. In a real application, this could show data from your API."
         })
       });
+
+      // Create a feature layer with public data
+      const featureLayer = new FeatureLayer({
+        url: 'https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/Earthquake_Data/FeatureServer/0',
+        outFields: ['*'],
+        popupTemplate: {
+          title: 'Magnitude {mag} Earthquake',
+          content: 'Location: {place}<br>Date: {time:DateString}<br>Depth: {depth} km'
+        }
+      });
+      // Add the layer to the map
+      map.add(featureLayer);
       
       // Add the graphic to the map view
       view.graphics.add(pointGraphic);

@@ -140,10 +140,10 @@ export const MapViewComponent = () => {
   const { user, logout } = useAuth();
   
   // Create a reference to the map container div
-  const mapRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef&lt;HTMLDivElement&gt;(null);
   
   // Store the MapView instance for cleanup
-  const viewRef = useRef<MapView | null>(null);
+  const viewRef = useRef&lt;MapView | null&gt;(null);
   
   useEffect(() => {
     // Initialize the map only when the component mounts and mapRef is available
@@ -248,14 +248,14 @@ export const MapViewComponent = () => {
   }, []); // Empty dependency array ensures this only runs once on mount
   
   return (
-    <div className="map-container">
-      <div className="user-bar">
-        <p>Welcome, {user?.username}!</p>
-        <button onClick={logout} className="logout-button">Log Out</button>
-      </div>
+    &lt;div className="map-container"&gt;
+      &lt;div className="user-bar"&gt;
+        &lt;p&gt;Welcome, {user?.username}!&lt;/p&gt;
+        &lt;button onClick={logout} className="logout-button"&gt;Log Out&lt;/button&gt;
+      &lt;/div&gt;
       
-      <div ref={mapRef} className="map-view"></div>
-    </div>
+      &lt;div ref={mapRef} className="map-view"&gt;&lt;/div&gt;
+    &lt;/div&gt;
   );
 };</code></pre>
             </div>
@@ -437,31 +437,43 @@ import { MapViewComponent } from './components/MapView';</code></pre>
         
         <h3>Step 7: Advanced Map Features (Optional)</h3>
         
-        <p>For those interested in adding more advanced features to their maps, here are some additional components you can explore:</p>
+        <p>For those interested in adding more advanced features to their maps, here are some additional components you can explore. <strong>All code examples below should be added to your <code>src/components/MapView.tsx</code> file</strong>:</p>
+        
+        <div class="info-box">
+            <p><strong>Important:</strong> These features are optional enhancements to your map component. When implementing them, make sure to add the imports at the top of your MapView.tsx file, and add the feature code inside the useEffect hook where you initialize your map.</p>
+        </div>
         
         <div class="collapsible">
             <button type="button" class="collapsible-header" aria-expanded="false">
                 <h4>Adding Layers <span class="icon">+</span></h4>
             </button>
             <div class="collapsible-content" aria-hidden="true">
-                <p>Layers allow you to add additional data to your map. Here's an example of adding a feature layer:</p>
+                <p>Layers allow you to add additional data to your map. To add a feature layer to your existing map component:</p>
                 
-                <pre><code>import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-
-// Create a feature layer
+                <ol>
+                    <li><strong>First, add this import</strong> at the top of your <code>src/components/MapView.tsx</code> file with your other imports:</li>
+                </ol>
+                
+                <pre><code>import FeatureLayer from '@arcgis/core/layers/FeatureLayer';</code></pre>
+                
+                <ol start="2">
+                    <li><strong>Then, add this code</strong> inside your useEffect hook, after creating the MapView but before the end of the useEffect function:</li>
+                </ol>
+                
+                <pre><code>// Create a feature layer with public data
 const featureLayer = new FeatureLayer({
-  url: 'https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Major_Cities/FeatureServer/0',
+  url: 'https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/Earthquake_Data/FeatureServer/0',
   outFields: ['*'],
   popupTemplate: {
-    title: '{NAME}, {ST}',
-    content: 'Population: {POPULATION}'
+    title: 'Magnitude {mag} Earthquake',
+    content: 'Location: {place}<br>Date: {time:DateString}<br>Depth: {depth} km'
   }
 });
 
 // Add the layer to the map
 map.add(featureLayer);</code></pre>
                 
-                <p>This example adds a layer showing major US cities with population information in popups.</p>
+                <p>This example adds a layer showing recent earthquake data with magnitude, location, date, and depth information in popups. The code should be placed after you've created your <code>map</code> and <code>view</code> variables but before the cleanup function.</p>
             </div>
         </div>
         
@@ -470,13 +482,21 @@ map.add(featureLayer);</code></pre>
                 <h4>Adding UI Components <span class="icon">+</span></h4>
             </button>
             <div class="collapsible-content" aria-hidden="true">
-                <p>You can add various UI components to enhance your map's functionality:</p>
+                <p>You can add various UI components to enhance your map's functionality. Here's how to add widgets to your map:</p>
+                
+                <ol>
+                    <li><strong>First, add these imports</strong> at the top of your <code>src/components/MapView.tsx</code> file:</li>
+                </ol>
                 
                 <pre><code>import BasemapToggle from '@arcgis/core/widgets/BasemapToggle';
 import ScaleBar from '@arcgis/core/widgets/ScaleBar';
-import Legend from '@arcgis/core/widgets/Legend';
-
-// Add a basemap toggle widget
+import Legend from '@arcgis/core/widgets/Legend';</code></pre>
+                
+                <ol start="2">
+                    <li><strong>Then, add this code</strong> inside your useEffect hook, after creating the MapView but before the cleanup function:</li>
+                </ol>
+                
+                <pre><code>// Add a basemap toggle widget
 const basemapToggle = new BasemapToggle({
   view: view,
   nextBasemap: 'satellite'
@@ -496,7 +516,18 @@ const legend = new Legend({
 });
 view.ui.add(legend, 'top-right');</code></pre>
                 
-                <p>These widgets provide additional functionality like changing basemaps, showing scale, and displaying a legend for your layers.</p>
+                <p>These widgets provide additional functionality like changing basemaps, showing scale, and displaying a legend for your layers. Note that the code must be placed after your <code>view</code> has been created since the widgets need to reference it.</p>
+                
+                <div class="info-box">
+                    <h5>Native Widgets vs. Calcite Components</h5>
+                    <p><strong>Important:</strong> The widgets shown here (BasemapToggle, ScaleBar, Legend) are native ArcGIS JavaScript API components specifically designed for map functionality. In the <a href="styling.html">Styling with Calcite</a> section, we'll introduce Esri's Calcite Design System, which provides React UI components for the overall application interface.</p>
+                    <p>Your completed application will use both:</p>
+                    <ul>
+                        <li><strong>Native ArcGIS widgets</strong>: For map-specific controls and functionality</li>
+                        <li><strong>Calcite components</strong>: For the general UI elements like headers, buttons, panels, etc.</li>
+                    </ul>
+                    <p>This combination gives you both the specialized map functionality of ArcGIS widgets and the professional Esri design language of Calcite.</p>
+                </div>
             </div>
         </div>
         
