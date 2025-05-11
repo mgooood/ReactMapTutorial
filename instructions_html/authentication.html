@@ -96,6 +96,13 @@
         <div class="card">
             <div class="code-block">
             <pre><code>// src/contexts/AuthContext.tsx
+
+// These imports provide essential React functionality:
+// - createContext: Creates a way to share login information between different parts of the app
+// - useContext: Helps components access the shared login information
+// - useState: Keeps track of information that can change (like user details or error messages)
+// - ReactNode: A TypeScript type that lets us accept any valid React content as children
+// - useEffect: Runs code when the component loads (used to check if user was previously logged in)
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 
 // Define types for our authentication
@@ -221,6 +228,10 @@ export const useAuth = () => {
         <div class="card">
             <div class="code-block">
                 <pre><code>// src/components/ProtectedRoute.tsx
+
+// Important imports for our protected route:
+// - Navigate: Used to automatically redirect users to another page
+// - useAuth: Gives us access to the login information we created
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -279,6 +290,13 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
         <div class="card">
             <div class="code-block">
                 <pre><code>// src/components/LoginForm.tsx
+
+// These imports provide functionality for our login form:
+// - useState: Helps us store and update the username, password, and any error messages
+// - FormEvent: A type that represents when a form is submitted
+// - useNavigate: Lets us change pages after successful login
+// - useAuth: Gives us access to login/logout functions
+// - LoginForm.css: The styles for our login form
 import { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -554,6 +572,14 @@ export const LoginForm = () => {
         <div class="card">
             <div class="code-block">
                 <pre><code>// src/App.tsx
+
+// Imports for our main App component:
+// - Router, Routes, Route, Navigate: React Router components for handling navigation and URL routing
+// - AuthProvider: Wraps our app with login functionality
+// - ProtectedRoute: Only allows logged-in users to see certain pages
+// - LoginForm: Our login screen component
+// - MapView: The map component we'll create in the next tutorial
+// - App.css: The main styles for our entire app
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
